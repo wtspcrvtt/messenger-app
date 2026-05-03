@@ -1,18 +1,31 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import { auth } from './firebase';
+import { auth, db } from './firebase';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import Chat from './components/Chat';
+import { setDoc, doc, serverTimestamp, getDocs, where, query, collection } from 'firebase/firestore';
+import Dashboard from './components/Dashboard';
 
 function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
+  const [nickname, setNickname] = useState('');
 
   const handleRegister = async () => {
+    if (nickname.trim() === '') {
+      setError('Введите никнейм');
+      return;
+    }
     try {
-      await createUserWithEmailAndPassword (auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      await setDoc(doc(db, 'users', user.uid), {
+        nickname: nickname,
+        email: email,
+        createdAt: serverTimestamp()
+      });
     } catch (error) {
     setError(error.message);
     }
@@ -35,14 +48,18 @@ function App() {
   }, []);
 
   if (user) {
-        return <Chat />;
+        return <Dashboard />;
       }
+
+
+      
   
   return (
     <><form>
       <input type="text" name='Email' value={email} onChange={(e) => setEmail(e.target.value)}
       placeholder='Email'/>
       <input type="text" name='Password' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' />
+      <input type="text" name='Nickname' value={nickname} onChange={(e) => setNickname(e.target.value)} />
       
     </form>
       <button type="button" onClick={handleRegister}>Зарегистрироваться</button>

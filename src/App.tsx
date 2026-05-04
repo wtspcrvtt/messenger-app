@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import { auth, db } from './firebase';
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
-import Chat from './components/Chat';
-import { setDoc, doc, serverTimestamp, getDocs, where, query, collection } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword,} from 'firebase/auth';
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
 import Dashboard from './components/Dashboard';
+import type { User } from 'firebase/auth'
 
 function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [nickname, setNickname] = useState('');
 
   const handleRegister = async () => {
@@ -27,7 +27,7 @@ function App() {
         createdAt: serverTimestamp()
       });
     } catch (error) {
-    setError(error.message);
+    setError(error instanceof Error ? error.message : 'Ошибка');
     }
   }
 
@@ -36,7 +36,7 @@ function App() {
     try {
       await signInWithEmailAndPassword (auth, email, password);
     } catch (error) {
-      setError(error.message);
+      setError(error instanceof Error ? error.message : 'Ошибка');
     }
   }
 

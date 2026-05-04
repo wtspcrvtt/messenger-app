@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { db } from "../firebase";
-import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, Timestamp } from "firebase/firestore";
-import { auth } from "../firebase";
+import { db, auth } from "../firebase";
+import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
 
+function ChatRoom({ chatId, currentUserId }: { chatId: string; currentUserId: string }) {
+    console.log('ChatRoom получил chatId:', chatId);
 
-function Chat() {
     interface Message {
         id: string;
         text: string;
@@ -12,11 +12,15 @@ function Chat() {
         createdAt: Timestamp;
         chatId: string;
     }
+    const [messages, setMessages] = useState<Message[]>([]);;
     const [inputText, setInputText] = useState('');
-    const [messages, setMessages] = useState<Message[]>([]);
 
     useEffect(() => {
-        const q = query(collection(db, 'messages'), orderBy('createdAt', 'asc'));
+        const q = query(
+            collection(db, 'messages'),
+            where('chatId', '==', chatId),
+            orderBy('createdAt', 'asc')
+        );
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const msgs = snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -27,12 +31,11 @@ function Chat() {
         return () => unsubscribe();
     }, []);
 
-    
-
     const sendMessage = async () => {
         if (inputText.trim() === "") return;
         try {
             await addDoc(collection(db, 'messages'), {
+                chatId: chatId,
                 text: inputText,
                 senderId: auth.currentUser?.uid,
                 createdAt: serverTimestamp()
@@ -53,20 +56,24 @@ function Chat() {
     const handleSend = () => {
         sendMessage();
     }
+    
 
-    return (
+    return ( 
         <>
-        <div>Чат работает</div>
-        <div>{messages.map(msg => (
-            <div key={msg.id}>
-                <strong>{msg.senderId}</strong>: {msg.text}
-            </div>
-        ))}</div>
-        <div ref={ref} />
-        <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)}/>
-        <button type="button" onClick={handleSend}>Отправить</button>
-        </>   
+        <div>Чат {chatId}</div>
+        <div>
+            {messages.map(msg => (
+                <div key={msg.id}>
+                    <strong>{msg.senderId ===  currentUserId ? 'Я' : msg.senderId}</strong>: {msg.text}
+                </div>
+            ))}
+            <div ref={ref} />
+        </div>
+        <input type="text" value={inputText} placeholder="Введите текст" onChange={(e) => setInputText(e.target.value)} />
+        <button onClick={handleSend}>Отправить</button>
+        </>
     )
+
 }
 
-export default Chat;
+export default ChatRoom

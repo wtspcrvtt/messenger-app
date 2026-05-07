@@ -45,6 +45,7 @@ body {
     padding: 12px;
     gap: 8px;
     border-top: 1px solid #ccc;
+    flex-wrap: wrap;
 }
 
 .textInput::placeholder {
@@ -61,6 +62,7 @@ body {
 .textInput {
     flex: 1;
     padding: 10px;
+    min-width: 0;
     border-radius: 24px;
     border: none;
     background-color: #E6CBD6;
@@ -78,10 +80,24 @@ body {
     font-weight: 700;
     transition: all 0.3s ease;
     animation: fadeIn 0.5s ease;
+    white-space: nowrap;
 }
 
 .sendBtn:hover {
     background-color: #7045a1;
     color: #E6CBD6;
     transform: scale(1.03);
+}
+
+@media (max-width: 767px) {
+  .myMessage, .otherMessage {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+  .textInput {
+    font-size: 14px;
+  }
+  .sendBtn {
+    padding: 0 16px;
+  }
 }

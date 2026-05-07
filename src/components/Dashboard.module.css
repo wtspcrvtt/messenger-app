@@ -7,12 +7,13 @@
 .dashboard {
     display: flex;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     justify-content: flex-start;
 }
 
 .sidebar {
     width: 300px;
+    flex-shrink: 0;
     background: rgba(0, 0, 0, 0.2);
     padding: 16px;
     display: flex;
@@ -41,6 +42,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .backBtn {
@@ -100,3 +102,46 @@
     color: #E6CBD6;
     transform: scale(1.05);
 }
+
+.chatList::-webkit-scrollbar {
+  width: 6px;
+}
+.chatList::-webkit-scrollbar-track {
+  background: #E6CBD6;
+  border-radius: 4px;
+}
+.chatList::-webkit-scrollbar-thumb {
+  background: #6B5370;
+  border-radius: 4px;
+}
+
+
+@media (max-width: 767px) {
+  .dashboard {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+  .chatArea {
+    height: 60vh;
+  }
+  .chatList div {
+    margin-top: 8px;
+  }
+
+  .backBtn {
+    width: fit-content;
+    height: fit-content;
+    padding: 8px;
+    border-radius: 12px;
+  }
+}
+
+
+

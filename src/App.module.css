@@ -145,7 +145,7 @@
   }
 
   .btnReg, .btnLogin {
-    width: 90%;
+    width: 100%;
   }
 
   .regLogBtn {
@@ -155,7 +155,7 @@
   }
 
   .h1 {
-    font-size: 40px;
+    font-size: 64px;
   }
 }
 

@@ -30,7 +30,7 @@ function ChatRoom({ chatId, currentUserId }: { chatId: string; currentUserId: st
             setMessages(msgs);
         });
         return () => unsubscribe();
-    }, []);
+    }, [chatId]);
 
     const sendMessage = async () => {
         if (inputText.trim() === "") return;

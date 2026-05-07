@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import './App.css'
+import styles from './App.module.css'
 import { auth, db } from './firebase';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword,} from 'firebase/auth';
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
@@ -27,7 +27,8 @@ function App() {
         createdAt: serverTimestamp()
       });
     } catch (error) {
-    setError(error instanceof Error ? error.message : 'Ошибка');
+      console.error('Ошибка регистрации', error);
+      setError(error instanceof Error ? error.message : 'Ошибка');
     }
   }
 
@@ -55,17 +56,22 @@ function App() {
       
   
   return (
-    <><form>
-      <input type="text" name='Email' value={email} onChange={(e) => setEmail(e.target.value)}
-      placeholder='Email'/>
-      <input type="text" name='Password' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' />
-      <input type="text" name='Nickname' value={nickname} onChange={(e) => setNickname(e.target.value)} />
-      
-    </form>
-      <button type="button" onClick={handleRegister}>Зарегистрироваться</button>
-      <button type="button" onClick={handleLogin}>Войти</button>
-
-    {error && <div style={{color: 'red', marginTop: '8px' }}>{error}</div>}  
+    <>
+    <div className={styles.loginContainer}>
+      <h1 className={styles.h1}>Lavanda</h1>
+      <form className={styles.regLoginForm}>
+        <div>
+          <input className={styles.inputEmail} type="text" name='Email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Email'/>
+        </div>  
+        <input className={styles.inputPassword} type="text" name='Password' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' />
+        <input className={styles.inputNickname} type="text" name='Nickname' value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder='Nickname'/>
+      </form>
+      <div className={styles.regLogBtn}>
+        <button className={styles.btnReg} type="button" onClick={handleRegister}>Зарегистрироваться</button>
+        <button className={styles.btnLogin} type="button" onClick={handleLogin}>Войти</button>
+      </div>
+      {error && <div style={{display:'flex', backgroundColor: '#8d3f49', color: '#f4e9f8', marginTop: '32px', padding: '16px', justifyContent: 'center', borderRadius: '16px', fontWeight: '500' }}>{error}</div>}
+    </div>
       </>
   )
 }

@@ -1,0 +1,163 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+.loginContainer {
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #D7CCDB, #3E5220 );
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.h1 {
+    text-align: center;
+    font-size: 64px;
+    animation: fadeIn 0.5s ease;
+    color: #613d68;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+.regLoginForm {
+    margin-top: 64px ;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.inputEmail {
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #E6CBD6;
+    color: #3E5220;
+}
+
+.inputEmail::placeholder {
+    color:#6B5370;
+    opacity: 0.8;
+}
+
+.inputPassword {
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #E6CBD6;
+    color: #3E5220;
+}
+
+.inputPassword, .inputEmail, .inputNickname {
+    transition: all 0.3s ease;
+}
+
+.inputEmail:focus, .inputPassword:focus, .inputNickname:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #9077A0;
+    transform: scale(1.1);
+}
+
+.inputPassword::placeholder {
+    color: #6B5370;
+    opacity: 0.8;
+}
+
+.inputNickname {
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #E6CBD6;
+    color: #3E5220;
+}
+
+.inputNickname::placeholder {
+    color: #6B5370;
+    opacity: 0.8;
+}
+
+.regLogBtn {
+    border: none;
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+    gap: 64px;
+}
+
+.btnReg {
+    border: none;
+    padding: 12px;
+    width: 256px;
+    border-radius: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease;
+    background-color:#6B5370;
+    color: #E6CBD6;
+}
+
+.btnReg:hover {
+    background-color: #7045a1;
+    color: #E6CBD6;
+    transform: scale(1.05);
+}
+
+.btnLogin {
+    background-color: #6B5370;
+    color: #E6CBD6;
+    border: none;
+    padding: 16px;
+    width: 128px;
+    border-radius: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease;
+}
+
+.btnLogin:hover {
+    background-color: #7045a1;
+    color: #D7CCDB;
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .regLoginForm {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .btnReg, .btnLogin {
+    width: 90%;
+  }
+
+  .regLogBtn {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .h1 {
+    font-size: 40px;
+  }
+}
+
+
+

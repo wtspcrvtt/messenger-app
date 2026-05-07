@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { db, auth } from "../firebase";
 import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
+import styles from  './ChatRoom.module.css'
 
 function ChatRoom({ chatId, currentUserId }: { chatId: string; currentUserId: string }) {
     console.log('ChatRoom получил chatId:', chatId);
@@ -60,17 +61,19 @@ function ChatRoom({ chatId, currentUserId }: { chatId: string; currentUserId: st
 
     return ( 
         <>
-        <div>Чат {chatId}</div>
-        <div>
+        <div className={styles.chatContainer}>Чат {chatId}</div>
+        <div className={styles.messagesArea}>
             {messages.map(msg => (
-                <div key={msg.id}>
+                <div className={msg.senderId === currentUserId ? styles.myMessage : styles.otherMessage} key={msg.id}>
                     <strong>{msg.senderId ===  currentUserId ? 'Я' : msg.senderId}</strong>: {msg.text}
                 </div>
             ))}
             <div ref={ref} />
         </div>
-        <input type="text" value={inputText} placeholder="Введите текст" onChange={(e) => setInputText(e.target.value)} />
-        <button onClick={handleSend}>Отправить</button>
+        <div className={styles.inputArea}>
+            <input className={styles.textInput} type="text" value={inputText} placeholder="Введите текст" onChange={(e) => setInputText(e.target.value)} />
+            <button className={styles.sendBtn} onClick={handleSend}>Отправить</button>
+        </div>
         </>
     )
 

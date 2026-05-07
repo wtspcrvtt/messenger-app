@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 import { db, auth } from "../firebase"
 import { collection, query, where, getDocs, addDoc, serverTimestamp, Timestamp } from "firebase/firestore"
 import ChatRoom from "./ChatRoom";
+import { signOut } from "firebase/auth";
+import styles from './Dashboard.module.css'
 
 
 type Chat = {
@@ -84,19 +86,49 @@ function Dashboard() {
         }
     }
 
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error('Ошибка выхода', error);
+        }
+    };
+
     return(
         <>
-        <div>Здесь будет интерфейс с чатами</div>
-        <input type="text" value={searchEmail} onChange={(e) => setSearchEmail(e.target.value)} placeholder="Email Пользователя" />
-        <button type="button" onClick={handleSearch}>Найти пользователя</button>
-        {foundUser && (
-        <div>
-            <strong>{foundUser.nickname}</strong> ({foundUser.email})
-            <button onClick={() => createOrOpenChat(foundUser.id)}>Начать чат</button>
+        <div className={styles.dashboard}>
+            <div className={styles.sidebar}>
+                <button onClick={handleLogout}>Выйти</button>
+                <div className={styles.search}>
+                    <input className={styles.searchInput} type="text" value={searchEmail} onChange={(e) => setSearchEmail(e.target.value)} placeholder="Email Пользователя" />
+                    <button className={styles.findBtn} onClick={handleSearch}>Найти пользователя</button>
+                    {foundUser && (
+                    <div>
+                            <strong>{foundUser.nickname}</strong> ({foundUser.email})
+                            <button className={styles.startChatBtn} onClick={() => createOrOpenChat(foundUser.id)}>Начать чат</button>
+                        <div className={styles.chatList}>
+                            {chats?.map(chat => {
+                                const otherUserId = chat.participants.find(id => id !== auth.currentUser?.uid);
+
+                                return (
+                                    <div key={chat.id} onClick={() => setCurrentChatId(chat.id)}>
+                                        Чат с: {otherUserId}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    )}
+                </div>
+            </div>
+            
+            
+            <div className={styles.chatArea}>
+            {currentChatId && auth.currentUser?.uid && (<ChatRoom chatId={currentChatId} currentUserId={auth.currentUser.uid} />)}
+            </div>
+            {searchError && <div style={{ color: 'red' }}>{searchError}</div>}
         </div>
-        )}
-        {searchError && <div style={{ color: 'red' }}>{searchError}</div>}
-        {currentChatId && auth.currentUser?.uid && (<ChatRoom chatId={currentChatId} currentUserId={auth.currentUser.uid} />)}
         </>
     )
 }

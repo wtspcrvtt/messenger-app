@@ -9,7 +9,6 @@
     width: 100%;
     height: 100vh;
     justify-content: flex-start;
-    
 }
 
 .sidebar {
@@ -26,12 +25,12 @@
 }
 
 .chatList div {
-    
     padding: 10px;
     background: #9077A0;
     margin: 16px 0;
     border-radius: 12px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .chatList div:hover {
@@ -42,4 +41,62 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+}
+
+.backBtn {
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 100%;
+    margin-bottom: 8px;
+    background-color: #565357;
+    color: #E6CBD6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.backBtn:hover {
+    transform: scale(1.03);
+}
+
+.searchInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #9077A0;
+    transform: scale(1.05);
+}
+.searchInput {
+    width: 90%;
+    margin-top: 8px;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    background-color: #E6CBD6;
+    color: #3E5220;
+    transition: all 0.3s ease;
+}
+
+.searchInput::placeholder {
+    color: #6B5370;
+    opacity: 0.8;
+}
+
+
+.findBtn {
+    margin-top: 8px;
+    border: none;
+    padding: 8px;
+    width: 128px;
+    border-radius: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease;
+    background-color:#6B5370;
+    color: #E6CBD6;
+}
+
+.findBtn:hover {
+    background-color: #7045a1;
+    color: #E6CBD6;
+    transform: scale(1.05);
 }

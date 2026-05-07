@@ -11,6 +11,7 @@ body {
     padding: 16px;
     font-size: 24px;
     color: #6B5370;
+    font-weight: 700;
 }
 
 .messagesArea {
@@ -46,12 +47,25 @@ body {
     border-top: 1px solid #ccc;
 }
 
+.textInput::placeholder {
+    color: #6B5370;
+    opacity: 0.8;
+}
+
+.textInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #9077A0;
+    transform: scale(1.01);
+}
+
 .textInput {
     flex: 1;
     padding: 10px;
     border-radius: 24px;
     border: none;
     background-color: #E6CBD6;
+    color: #3E5220;
+    transition: all 0.3s ease;
 }
 
 .sendBtn {
@@ -61,4 +75,13 @@ body {
     border-radius: 24px;
     padding: 0 20px;
     cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease;
+}
+
+.sendBtn:hover {
+    background-color: #7045a1;
+    color: #E6CBD6;
+    transform: scale(1.03);
 }

@@ -112,7 +112,7 @@ function Dashboard() {
         <>
         <div className={styles.dashboard}>
             <div className={styles.sidebar}>
-                <button onClick={handleLogout}>Выйти</button>
+                <button className={styles.backBtn} onClick={handleLogout}>Выйти</button>
                 <div className={styles.search}>
                     <input className={styles.searchInput} type="text" value={searchEmail} onChange={(e) => setSearchEmail(e.target.value)} placeholder="Email Пользователя" />
                     <button className={styles.findBtn} onClick={handleSearch}>Найти пользователя</button>

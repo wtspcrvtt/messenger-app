@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { db, auth } from "../firebase"
-import { collection, query, where, getDocs, addDoc, serverTimestamp, Timestamp } from "firebase/firestore"
+import { collection, query, where, getDocs, addDoc, serverTimestamp, Timestamp, onSnapshot } from "firebase/firestore"
 import ChatRoom from "./ChatRoom";
 import { signOut } from "firebase/auth";
 import styles from './Dashboard.module.css'
@@ -18,9 +18,9 @@ function Dashboard() {
     const [searchEmail, setSearchEmail] = useState('');
     const [foundUser, setFoundUser] = useState<{ id: string; nickname: string; email: string } | null>(null);
     const [searchError, setSearchError] = useState('');
-    const [chatsError, setChatsError] = useState('');
     const [chats, setChats] = useState<Chat[] | null>(null);
     const [currentChatId, setCurrentChatId] = useState<string | null>(null);
+    const [ userNames, setUserNames] = useState<Record<string, string>>({});
 
     const handleSearch = async () => {
         setSearchError('');
@@ -41,22 +41,37 @@ function Dashboard() {
     };
 
     
-    const loadChats = async () => {
-        const currentUserId = auth.currentUser?.uid;
-        if (!currentUserId) return;
-        try {
-            const q = query(collection(db, 'chats'), where ('participants', 'array-contains', currentUserId));
-            const snapshot = await getDocs(q);
-            const loadedChats = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Chat));
-            setChats(loadedChats);
-        }   catch  {
-            console.error('Ошибка загрузки чатов', chatsError);
-            setChatsError('Не удалось загрузить чаты');
-        }
-        }
     useEffect(() => {
-        loadChats();
+        const currentUserId = auth.currentUser?.uid;
+        if(!currentUserId) return;
+
+        const q = query(collection(db, 'chats'), where('participants', 'array-contains', currentUserId));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const loadedChats = snapshot.docs.map(doc => ({id: doc.id, ...doc.data() } as Chat));
+            setChats(loadedChats);
+        });
+        return () => unsubscribe();
     }, []);
+
+    const fetchUserName = async (userId: string) => {
+        if (userNames [userId]) return;
+        const q = query(collection(db, 'users'), where('__name__', '==', userId));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+            const nickname = snapshot.docs[0].data().nickname;
+            setUserNames(prev => ({ ...prev, [userId]: nickname}));
+        }
+    };
+
+    useEffect(() => {
+        if (!chats) return;
+        chats.forEach(chat => {
+            const otherId = chat.participants.find(id => id !== auth.currentUser?.uid);
+            if (otherId && !userNames[otherId]) {
+                fetchUserName(otherId);
+            }
+        });
+    }, [chats]);
 
     const createOrOpenChat = async (targetUserId: string) => {
         const currentUserId = auth.currentUser?.uid;
@@ -77,12 +92,10 @@ function Dashboard() {
                     lastMessage: null
                 });
                 setCurrentChatId(newChatRef.id);
-                await loadChats();
             }
             
         } catch (error) {
             console.error ('Ошибка создания чата', error);
-            setChatsError ('Не удалось загрузить чат');
         }
     }
 
@@ -107,23 +120,22 @@ function Dashboard() {
                     <div>
                             <strong>{foundUser.nickname}</strong> ({foundUser.email})
                             <button className={styles.startChatBtn} onClick={() => createOrOpenChat(foundUser.id)}>Начать чат</button>
+                    </div>
+                    )}
                         <div className={styles.chatList}>
                             {chats?.map(chat => {
                                 const otherUserId = chat.participants.find(id => id !== auth.currentUser?.uid);
-
+                                if (!otherUserId) return null;
                                 return (
                                     <div key={chat.id} onClick={() => setCurrentChatId(chat.id)}>
-                                        Чат с: {otherUserId}
+                                        Чат с: {userNames[otherUserId] || 'Загрузка..'}
                                     </div>
                                 );
                             })}
                         </div>
-                    </div>
-                    )}
                 </div>
             </div>
-            
-            
+                                
             <div className={styles.chatArea}>
             {currentChatId && auth.currentUser?.uid && (<ChatRoom chatId={currentChatId} currentUserId={auth.currentUser.uid} />)}
             </div>
@@ -132,5 +144,9 @@ function Dashboard() {
         </>
     )
 }
+
+                                    
+            
+            
 
 export default Dashboard
